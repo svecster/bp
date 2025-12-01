@@ -1,0 +1,36 @@
+/PROG  OPEN_CLOSE_GR_1	  Macro
+/ATTR
+OWNER		= MNEDITOR;
+COMMENT		= "OTEV.ZAVR. GR 1";
+PROG_SIZE	= 340;
+CREATE		= DATE 15-02-13  TIME 10:51:34;
+MODIFIED	= DATE 15-10-14  TIME 18:28:04;
+FILE_NAME	= OPEN_CLO;
+VERSION		= 0;
+LINE_COUNT	= 12;
+MEMORY_SIZE	= 796;
+PROTECT		= READ_WRITE;
+TCD:  STACK_SIZE	= 0,
+      TASK_PRIORITY	= 50,
+      TIME_SLICE	= 0,
+      BUSY_LAMP_OFF	= 0,
+      ABORT_REQUEST	= 0,
+      PAUSE_REQUEST	= 0;
+DEFAULT_GROUP	= *,*,*,*,*;
+CONTROL_CODE	= 00000000 00000000;
+/APPL
+/MN
+   1:  IF (DO[49] AND DI[49]),JMP LBL[1] ;
+   2:   ;
+   3:  DO[49]=ON ;
+   4:  WAIT (DI[49])    ;
+   5:   ;
+   6:  JMP LBL[2] ;
+   7:   ;
+   8:  LBL[1] ;
+   9:  DO[49]=OFF ;
+  10:  WAIT (!DI[49])    ;
+  11:   ;
+  12:  LBL[2] ;
+/POS
+/END
