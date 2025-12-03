@@ -1,0 +1,118 @@
+% LaTeX snippets for BP documentation
+
+% A) Blokové schéma PLC → BG1 → MAIN → PROGxx / PROG30
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=12mm,>=latex,rounded corners,align=center,semithick]
+    \tikzstyle{block}=[rectangle,draw,minimum width=28mm,minimum height=8mm,fill=gray!10];
+    \tikzstyle{station}=[block,fill=blue!7];
+    \tikzstyle{io}=[block,fill=green!10];
+
+    % Top row: PLC + background task + MAIN dispatcher
+    \node[block] (plc) {PLC\\GI/GO, DI/DO};
+    \node[block,right=of plc] (bg1) {BG1\\\footnotesize GI1=R1 (program)\\GI2=R2 (délka)};
+    \node[block,right=of bg1] (main) {MAIN\\\footnotesize handshake DO14/DI14\\CALL SR25};
+
+    % Program selection
+    \node[block,right=of main] (selector) {PROGxx\\(SR24+R1)};
+    \draw[->] (plc) -- node[above]{GI[1..3]} (bg1);
+    \draw[->] (bg1) -- node[above]{R1,R2} (main);
+    \draw[->] (main) -- node[above]{SR25} (selector);
+
+    % PROG30 detail
+    \node[block,below=20mm of selector] (prog30) {PROG30\\hlavní cyklus};
+    \draw[->] (selector) -- node[right]{volba délky / varianty} (prog30);
+
+    % Stations inside PROG30
+    \node[station,below left=12mm and 6mm of prog30] (zs2) {Vstupní\\zásobník\\(UF1/UT5)};
+    \node[station,below=of prog30] (buffer) {Vyrovnávací\\stanice\\(UF2/UT5)};
+    \node[station,below right=12mm and 6mm of prog30] (five) {5-STROKE\\vyjmutí+vlo\vzen\'i\\(UF2/UT6/5)};
+    \node[station,below=of buffer] (shaver) {SHAWER 2\\vyjmutí+vlo\vzen\'i\\(UF3/UT5/6)};
+    \node[station,below=of shaver] (clean) {Mechanické\\čištění kartáčem\\(UF4/UT5\\R19,R21,R23)};
+    \node[station,below=of clean] (deburr) {Odhrotování\\(UF4/UT5\\DI69/71, DO69/71/73)};
+    \node[station,below=of deburr] (out) {Výstup\\dopravník\\(UF5/UT5)};
+
+    % Flows
+    \draw[->] (prog30) -- (zs2);
+    \draw[->] (zs2) -- (buffer);
+    \draw[->] (buffer) -- (five);
+    \draw[->] (five) -- (shaver);
+    \draw[->] (shaver) -- (clean);
+    \draw[->] (clean) -- (deburr);
+    \draw[->] (deburr) -- (out);
+
+    % Home / end
+    \node[block,right=16mm of out] (home) {LBL[50]\\HOME_RUC};
+    \draw[->] (out) -- node[below]{DI54 konec šarže} (home);
+
+    % GO[3] annotations
+    \path (zs2) -- node[left]{GO3=6} (buffer);
+    \path (five) -- node[right]{GO3=2} (shaver);
+    \path (shaver) -- node[right]{GO3=3} (clean);
+    \path (clean) -- node[right]{GO3=4} (deburr);
+    \path (deburr) -- node[right]{GO3=5} (out);
+  \end{tikzpicture}
+  \caption{Blokové schéma toku PLC → BG1 → MAIN → PROG30 s rozložením stanic včetně nového čištění a odhrotování.}
+\end{figure}
+
+% B) Tabulky I/O
+\begin{table}[H]
+  \centering
+  \caption{Skupinové signály GI/GO používané robotem}
+  \begin{tabular}{lll}
+    \toprule
+    Signál & Význam & Použití / dopad \\
+    \midrule
+    GI[1] & Číslo programu & BG1 kopíruje do R[1], MAIN skládá SR25 a volá PROGxx \\
+    GI[2] & Délka trubky & BG1 → R[2], PROG30 validuje (170--400 mm) a počítá PR[21,3] \\
+    GI[3] & Index slotu zásobníku & PROG30 stanoví offset PR[14] pro polohu ve vstupním zásobníku \\
+    GO[1] & Echo čísla programu & BG1 zpětně předává PLC potvrzení volby \\
+    GO[2] & Echo délky trubky & BG1 zpětně předává PLC potvrzení délky \\
+    GO[3] & Stav obsluhované stanice & PROG30: 6 zásobník, 2 5-stroke, 3 Shawer2, 4 čištění, 5 odhrotování \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \caption{Digitální vstupy DI použit v PROG30}
+  \begin{tabular}{lll}
+    \toprule
+    DI & Popis & Kde / proč \\
+    \midrule
+    DI[15], DI[16] & Ready obou griperů & Start cyklu (ř.2) \\
+    DI[49], DI[50] & Stav chapadla 1 (otevřeno/zavřeno) & Zásobník, čištění, odhrotování \\
+    DI[51], DI[52] & Stav chapadla 2 (otevřeno/zavřeno) & Zásobník, vyrovnávací stanice, Shawer2 \\
+    DI[53] & Prázdný zásobník & Skok LBL20 (ř.40) \\
+    DI[54] & Konec šarže & Odskok na LBL50 → HOME (ř.334) \\
+    DI[56] & Lůžko vyrovnávací stanice volné & WAIT před založením (ř.82) \\
+    DI[61], DI[62], DI[64] & Signály 5-stroke (otevřeno/zavřeno) & Vyjmutí/vložení dílu (ř.136–175) \\
+    DI[63] & Kontakt 5-stroke & Potvrzení dosednutí (ř.172) \\
+    DI[65], DI[66], DI[68], DI[67] & Signály Shawer 2 (READY/SEAL/KONTAKT) & Vyjmutí/vložení (ř.193–245) \\
+    DI[69], DI[71] & Odhrotovací jednotka READY / sevřeno & Nová stanice (ř.300–318) \\
+    DI[77] & Přítomnost dílu v zásobníku & Rozhodnutí o odběru (ř.39) \\
+    DI[14] & Handshake MAIN & Jen dispatcher (pro kontext) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \caption{Digitální výstupy DO použit v PROG30}
+  \begin{tabular}{lll}
+    \toprule
+    DO & Popis & Kde / proč \\
+    \midrule
+    DO[7], DO[13] & Start povolení / simulace OFF & Vstupní čekání (ř.2) \\
+    DO[49], DO[51] & Ovládání chapadel 1/2 & Zásobník, vyrovnávací, odhrotování \\
+    DO[58] & Takt zásobníku & Impuls 0.5 s (ř.37) \\
+    DO[77] & Uchopení zásobník & Aktivace při odběru (ř.61) \\
+    DO[111], DO[112] & Signály pro stroje 5-stroke / Shawer2 & Nájezdy a odjezdy (ř.137, 198) \\
+    DO[62], DO[63], DO[64] & Ovládání čelistí 5-stroke & Otevři/pulz/uzavři (ř.143–178) \\
+    DO[65], DO[66], DO[67], DO[68] & Signály Shawer 2 & READY/OPEN/PULSE/CLAMP (ř.205–245) \\
+    DO[115], DO[116] & Servisní vzduch / zarážka vyrovnávky & Zásobník a buffer (ř.57, 85) \\
+    DO[113] & Motor kartáče & Zapnutí/vypnutí nové stanice (ř.268, 324) \\
+    DO[69], DO[71], DO[73] & Odhrotování: sevření / start / impuls & Nová stanice (ř.308, 317, 322) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
