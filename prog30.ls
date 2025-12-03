@@ -20,353 +20,353 @@ DEFAULT_GROUP	= 1,*,*,*,*;
 CONTROL_CODE	= 00000000 00000000;
 /APPL
 /MN
-   1:  !HOME ? ;
-   2:  WAIT (DO[7] AND !DO[13] AND DI[15] AND DI[16])    ;
-   3:J PR[2] 20% FINE    ;
-   4:   ;
-   5:  CALL INIT    ;
-   6:   ;
-   7:  UFRAME_NUM=1 ;
-   8:  UTOOL_NUM=5 ;
-   9:J P[1] 100% CNT100    ;
-  10:   ;
-  11:  !Novy cyklus ;
-  12:  LBL[100] ;
-  13:   ;
-  14:  UFRAME_NUM=1 ;
-  15:  UTOOL_NUM=5 ;
-  16:J P[11] 100% CNT80    ;
-  17:   ;
-  18:  !Greifer OK? ;
-  19:  WAIT (DI[15] AND DI[16])    ;
-  20:   ;
-  21:  !Delka trubky OK? ;
-  22:  LBL[1] ;
-  23:  R[10]=GI[2]    ;
-  24:  IF (R[10]<170 OR R[10]>400),JMP LBL[1] ;
-  25:   ;
-  26:  !Kontrola neni dil ;
-  27:  WAIT (!DI[50] AND !DI[52])    ;
-  28:  DO[49]=ON ;
-  29:  DO[51]=ON ;
-  30:  WAIT (DI[49] AND DI[51])    ;
-  31:   ;
-  32:  !****************** ;
-  33:  !Vstupni zasobnik 2 ;
-  34:  !****************** ;
-  35:   ;
-  36:  !Takt puls ;
-  37:  DO[58]=PULSE,0.5sec ;
-  38:   ;
-  39:  WAIT (DI[77] OR DI[53])    ;
-  40:  IF (DI[53]),JMP LBL[20] ;
-  41:   ;
-  42:  GO[3]=6 ;
-  43:   ;
-  44:  PR[14,1]=0    ;
-  45:  PR[14,2]=0    ;
-  46:  PR[14,3]=0    ;
-  47:  PR[14,4]=0    ;
-  48:  PR[14,5]=0    ;
-  49:  PR[14,6]=0    ;
-  50:   ;
-  51:  R[5]=GI[3]    ;
-  52:   ;
-  53:  PR[14,1]=R[5]*(-38)    ;
-  54:   ;
-  55:  UFRAME_NUM=1 ;
-  56:  UTOOL_NUM=5 ;
-  57:J P[46] 100% CNT70 TB   0.00sec,DO[115]=ON Tool_Offset,PR[14]    ;
-  58:   ;
-  59:   ;
-  60:L P[48] 2000mm/sec CNT80 Tool_Offset,PR[14]    ;
-  61:L P[47] 1000mm/sec FINE TB    .05sec,DO[77]=ON Tool_Offset,PR[14]    ;
-  62:   ;
-  63:  DO[49]=OFF ;
-  64:  WAIT (DI[50])    ;
-  65:   ;
-  66:L P[52] 1000mm/sec CNT50 Tool_Offset,PR[14]    ;
-  67:L P[53] 1500mm/sec CNT80 Tool_Offset,PR[14]    ;
-  68:L P[54] 2000mm/sec CNT100 TB   0.00sec,DO[115]=OFF Tool_Offset,PR[14]    ;
-  69:  LBL[20] ;
-  70:J P[2] 100% CNT100 TB   0.00sec,DO[77]=OFF    ;
-  71:   ;
-  72:  !***************** ;
-  73:  !Vyrovnavaci stanice ;
-  74:  !***************** ;
-  75:   ;
-  76:  UFRAME_NUM=2 ;
-  77:  UTOOL_NUM=5 ;
-  78:   ;
-  79:J P[45] 100% CNT80    ;
-  80:  IF (DI[53] AND DI[49]),JMP LBL[30] ;
-  81:   ;
-  82:  WAIT DI[56]=OFF    ;
-  83:   ;
-  84:  !Zalozeni do luzka ;
-  85:L P[27] 2000mm/sec CNT50 TB    .50sec,DO[116]=ON    ;
-  86:L P[16] 1000mm/sec CNT20    ;
-  87:L P[7] 1000mm/sec FINE TB    .20sec,DO[49]=ON    ;
-  88:  //DO[49]=ON ;
-  89:  WAIT DI[49]=ON    ;
-  90:  WAIT    .50(sec) ;
-  91:   ;
-  92:  PR[13,1]=0    ;
-  93:  PR[13,2]=0    ;
-  94:  PR[13,3]=0    ;
-  95:  PR[13,4]=0    ;
-  96:  PR[13,5]=0    ;
-  97:  PR[13,6]=0    ;
-  98:   ;
-  99:  PR[13,6]=R[9]    ;
- 100:   ;
- 101:L P[55] 1500mm/sec FINE Tool_Offset,PR[13]    ;
- 102:  DO[49]=OFF ;
- 103:  WAIT DI[50]=ON    ;
- 104:   ;
- 105:L P[56] 1000mm/sec CNT30 Tool_Offset,PR[13]    ;
- 106:L P[57] 2000mm/sec CNT100    ;
- 107:J P[58] 100% CNT100 TB    .50sec,DO[116]=OFF    ;
- 108:   ;
- 109:  LBL[30] ;
- 110:   ;
- 111:  !TOOL_OFFSET pro UTOOL 1 ;
- 112:  PR[21,1]=0    ;
- 113:  PR[21,2]=0    ;
- 114:  PR[21,3]=0    ;
- 115:  PR[21,4]=0    ;
- 116:  PR[21,5]=0    ;
- 117:  PR[21,6]=0    ;
- 118:  !TOOL_OFFSET pro UTOOL 2 ;
- 119:  PR[22]=PR[21]    ;
- 120:   ;
- 121:  !Upinac 6 Pripraven? ;
- 122:  WAIT (DI[51] AND !DI[52])    ;
- 123:   ;
- 124:  !***************** ;
- 125:  !5-stroke ;
- 126:  !***************** ;
- 127:   ;
- 128:  GO[3]=2 ;
- 129:   ;
- 130:  !Vyjmuti trubky  ;
- 131:   ;
- 132:  UFRAME_NUM=2 ;
- 133:  UTOOL_NUM=6 ;
- 134:J P[20] 100% CNT100    ;
- 135:J P[18] 100% CNT50    ;
- 136:  WAIT (DI[61])    ;
- 137:L P[4] 2000mm/sec CNT10 TB    .05sec,DO[111]=ON    ;
- 138:L P[5] 1500mm/sec FINE    ;
- 139:   ;
- 140:  IF (DI[62] AND !DI[64]),JMP LBL[21] ;
- 141:  DO[51]=OFF ;
- 142:  WAIT (DI[52])    ;
- 143:  DO[62]=ON ;
- 144:  WAIT (DI[62] AND !DI[64])    ;
- 145:  DO[62]=OFF ;
- 146:  LBL[21] ;
- 147:   ;
- 148:L P[6] 500mm/sec CNT10 TB   0.00sec,DO[63]=PULSE,1.0sec    ;
- 149:L P[8] 1000mm/sec CNT100    ;
- 150:L P[30] 2000mm/sec CNT100 TB    .05sec,DO[111]=OFF    ;
- 151:   ;
- 152:  !Vlozeni trubky ;
- 153:  WAIT (DI[62] AND !DI[64])    ;
- 154:   ;
- 155:  !Vypocet delky ;
- 156:  PR[21,3]=345-R[2]    ;
- 157:   ;
- 158:  !Korekce st.1 C ;
- 159:  WAIT R[17]>=(-2) AND R[17]<=2    ;
- 160:  PR[24]=PR[21]    ;
- 161:  PR[24,3]=PR[24,3]+R[17]    ;
- 162:   ;
- 163:  UFRAME_NUM=2 ;
- 164:  UTOOL_NUM=5 ;
- 165:J P[12] 100% CNT50    ;
- 166:L P[3] 2000mm/sec CNT50 TB    .05sec,DO[111]=ON Tool_Offset,PR[21]    ;
- 167:L P[13] 1500mm/sec CNT50 Tool_Offset,PR[21]    ;
- 168:L P[14] 500mm/sec FINE Tool_Offset,PR[24]    ;
- 169:   ;
- 170:  IF (!DI[50]),JMP LBL[22] ;
- 171:  !Kontakt? ;
- 172:  WAIT (DI[63])    ;
- 173:  DO[64]=ON ;
- 174:  WAIT (DI[64] AND !DI[62])    ;
- 175:  DO[49]=ON ;
- 176:  WAIT (DI[49])    ;
- 177:  DO[64]=OFF ;
- 178:  LBL[22] ;
- 179:  DO[61]=ON ;
- 180:  WAIT (!DI[61])    ;
- 181:  DO[61]=OFF ;
- 182:   ;
- 183:L P[25] 2000mm/sec CNT50    ;
- 184:J P[15] 100% CNT100 TB   0.00sec,DO[111]=OFF    ;
- 185:   ;
- 186:  !***************** ;
- 187:  !Shawer 2 ;
- 188:  !***************** ;
- 189:   ;
- 190:  GO[3]=3 ;
- 191:   ;
- 192:  !Vyjmuti trubky SHAWER 2 ;
- 193:   ;
- 194:  UFRAME_NUM=3 ;
- 195:  UTOOL_NUM=5 ;
- 196:  //J P[9] 100% FINE    ;
- 197:J P[33] 100% CNT80    ;
- 198:J P[34] 100% CNT50 TB    .05sec,DO[112]=ON    ;
- 199:L P[35] 2000mm/sec FINE    ;
- 200:   ;
- 201:  IF (DI[66] AND !DI[68]),JMP LBL[31] ;
- 202:  DO[49]=OFF ;
- 203:  WAIT (DI[50])    ;
- 204:  DO[66]=ON ;
- 205:  WAIT (DI[66] AND !DI[68])    ;
- 206:  DO[66]=OFF ;
- 207:  LBL[31] ;
- 208:   ;
- 209:L P[36] 400mm/sec CNT10    ;
- 210:L P[37] 1000mm/sec CNT100    ;
- 211:L P[44] 2000mm/sec CNT100 TB   0.00sec,DO[67]=PULSE,1.0sec    ;
- 212:L P[31] 2000mm/sec CNT80 TB    .05sec,DO[112]=OFF    ;
- 213:   ;
- 214:  !Vlozeni trubky SHAWER 2 ;
- 215:  WAIT (DI[66] AND !DI[68])    ;
- 216:   ;
- 217:  !Korekce st.2 C ;
- 218:  WAIT R[18]>=(-2) AND R[18]<=2    ;
- 219:  PR[25]=PR[22]    ;
- 220:  PR[25,3]=PR[25,3]+R[18]    ;
- 221:   ;
- 222:   ;
- 223:  UFRAME_NUM=3 ;
- 224:  UTOOL_NUM=6 ;
- 225:J P[38] 100% CNT50    ;
- 226:L P[39] 2000mm/sec CNT100 TB    .05sec,DO[112]=ON    ;
- 227:L P[32] 1500mm/sec CNT100    ;
- 228:L P[40] 1000mm/sec CNT50    ;
- 229:L P[41] 500mm/sec FINE    ;
- 230:   ;
- 231:  IF (!DI[52]),JMP LBL[32] ;
- 232:  !Kontakt? ;
- 233:  WAIT (DI[67])    ;
- 234:  DO[68]=ON ;
- 235:  WAIT (DI[68] AND !DI[66])    ;
- 236:  DO[51]=ON ;
- 237:  WAIT (DI[51])    ;
- 238:  DO[68]=OFF ;
- 239:  LBL[32] ;
- 240:  DO[65]=ON ;
- 241:  WAIT (!DI[65])    ;
- 242:  DO[65]=OFF ;
- 243:   ;
- 244:L P[42] 2000mm/sec CNT50    ;
- 245:J P[43] 100% CNT80 TB    .05sec,DO[112]=OFF    ;
- 246:   ;
- 247:   ;
- 248:  !***************** ;
- 249:  !Cisteni ;
- 250:  !***************** ;
- 251:   ;
- 252:  GO[3]=4 ;
- 253:   ;
- 254:  UFRAME_NUM=4 ;
- 255:  UTOOL_NUM=5 ;
- 256:   ;
- 257:  !Korekce st.3 A ;
- 258:  WAIT R[19]>=(-2) AND R[19]<=2    ;
- 259:  PR[26]=PR[21]    ;
- 260:  PR[26,3]=PR[26,3]+R[19]    ;
- 261:   ;
- 262:J P[17] 100% CNT100    ;
- 263:J P[19] 100% CNT100    ;
- 264:   ;
- 265:   ;
- 266:  IF ((!DI[50] AND DI[49])),JMP LBL[41] ;
- 267:   ;
- 268:J P[21] 100% CNT70 TB    .05sec,DO[113]=ON Tool_Offset,PR[21]    ;
- 269:   ;
- 270:  !Korekce levy bod ;
- 271:  PR[27]=PR[26]    ;
- 272:  PR[27,1]=100-R[21]    ;
- 273:   ;
- 274:  !Korekce horni bod ;
- 275:  PR[28]=PR[26]    ;
- 276:  PR[28,2]=100-R[21]    ;
- 277:   ;
- 278:  !Korekce pravy bod ;
- 279:  PR[29]=PR[26]    ;
- 280:  PR[29,1]=(-100)+R[21]    ;
- 281:   ;
- 282:  !Korekce spodni bod ;
- 283:  PR[30]=PR[26]    ;
- 284:  PR[30,2]=(-100)+R[21]    ;
- 285:   ;
- 286:   ;
- 287:L P[22] 2000mm/sec CNT50 Tool_Offset,PR[21]    ;
- 288:L P[23] R[23]mm/sec CNT100 Tool_Offset,PR[27]    ;
+   1:  !HOME ? ; ! Úvodní kontrola polohy, program startuje s očekávaným návratem v blízkosti HOME.
+   2:  WAIT (DO[7] AND !DO[13] AND DI[15] AND DI[16])    ; ! Čeká na PLC start, vypnutou simulaci a potvrzení obou chapadel, aby bylo bezpečné začít cyklus.
+   3:J PR[2] 20% FINE    ; ! Přesun do referenční HOME pozice pro jistotu před cyklem.
+   4:   ; ! Oddělující řádek pro čitelnost.
+   5:  CALL INIT    ; ! Spuštění přípravy I/O a chapadel – sjednocení výstupů před výrobou.
+   6:   ; ! Oddělení bloků logiky.
+   7:  UFRAME_NUM=1 ; ! Nastavení rámce pro manipulaci u vstupních stanic.
+   8:  UTOOL_NUM=5 ; ! Volba standardního nástroje pro uchopování trubek.
+   9:J P[1] 100% CNT100    ; ! Rychlý přesun do výchozí pozice nad zásobníkem.
+  10:   ; ! Prázdný řádek pro přehlednost.
+  11:  !Novy cyklus ; ! Komentář hlavičky opakované smyčky.
+  12:  LBL[100] ; ! Začátek hlavní výrobní smyčky.
+  13:   ; ! Oddělovač.
+  14:  UFRAME_NUM=1 ; ! Volí souřadný systém vstupního zásobníku.
+  15:  UTOOL_NUM=5 ; ! Používá hlavní chapadlo pro manipulaci.
+  16:J P[11] 100% CNT80    ; ! Přejezd k čekací pozici u zásobníku.
+  17:   ; ! Oddělovač.
+  18:  !Greifer OK? ; ! Kontrola připravenosti chapadel.
+  19:  WAIT (DI[15] AND DI[16])    ; ! Čeká na potvrzení obou griperů před další manipulací.
+  20:   ; ! Oddělovač.
+  21:  !Delka trubky OK? ; ! Blok validace vstupu od PLC.
+  22:  LBL[1] ; ! Smyčka pro ověření délky.
+  23:  R[10]=GI[2]    ; ! Načtení délky trubky z GI od PLC.
+  24:  IF (R[10]<170 OR R[10]>400),JMP LBL[1] ; ! Opakování čtení, dokud délka není v rozsahu 170–400 mm.
+  25:   ; ! Oddělovač.
+  26:  !Kontrola neni dil ; ! Ověření, že není upnutý předchozí kus.
+  27:  WAIT (!DI[50] AND !DI[52])    ; ! Čeká na uvolnění obou čelistí.
+  28:  DO[49]=ON ; ! Aktivuje otevření chapadla 1 pro příjem dílu.
+  29:  DO[51]=ON ; ! Aktivuje otevření chapadla 2.
+  30:  WAIT (DI[49] AND DI[51])    ; ! Ověří, že obě chapadla jsou skutečně otevřená.
+  31:   ; ! Oddělovač.
+  32:  !****************** ; ! Začátek sekce vstupního zásobníku 2.
+  33:  !Vstupni zasobnik 2 ; ! Titulek stanice.
+  34:  !****************** ; ! Titulek stanice.
+  35:   ; ! Oddělovač.
+  36:  !Takt puls ; ! Impuls pro posun zásobníku.
+  37:  DO[58]=PULSE,0.5sec ; ! Vysílá půlsekundový takt na zásobník.
+  38:   ; ! Oddělovač.
+  39:  WAIT (DI[77] OR DI[53])    ; ! Čeká na přítomnost dílu nebo detekci prázdného zásobníku.
+  40:  IF (DI[53]),JMP LBL[20] ; ! Pokud není díl, přeskočí na další stanici.
+  41:   ; ! Oddělovač.
+  42:  GO[3]=6 ; ! Informuje PLC o obsluze stanice vstupní zásobník.
+  43:   ; ! Oddělovač.
+  44:  PR[14,1]=0    ; ! Nuluje offset X pro posuv po zásobníku.
+  45:  PR[14,2]=0    ; ! Nuluje offset Y.
+  46:  PR[14,3]=0    ; ! Nuluje offset Z.
+  47:  PR[14,4]=0    ; ! Nuluje rotaci W.
+  48:  PR[14,5]=0    ; ! Nuluje rotaci P.
+  49:  PR[14,6]=0    ; ! Nuluje rotaci R.
+  50:   ; ! Oddělovač.
+  51:  R[5]=GI[3]    ; ! Načte index pozice dílu v zásobníku.
+  52:   ; ! Oddělovač.
+  53:  PR[14,1]=R[5]*(-38)    ; ! Vypočítá posuv v ose X podle slotu zásobníku (rozteč 38 mm).
+  54:   ; ! Oddělovač.
+  55:  UFRAME_NUM=1 ; ! Nastaví rámec zásobníku pro následující pohyby.
+  56:  UTOOL_NUM=5 ; ! Použije griper pro odebírání.
+  57:J P[46] 100% CNT70 TB   0.00sec,DO[115]=ON Tool_Offset,PR[14]    ; ! Přijede nad díl se zapnutím vakuového/IO signálu DO115 pro bezpečné přiblížení.
+  58:   ; ! Oddělovač.
+  59:   ; ! Oddělovač pro čitelnost.
+  60:L P[48] 2000mm/sec CNT80 Tool_Offset,PR[14]    ; ! Přesun do mezipolohy nad dílem s offsetem slotu.
+  61:L P[47] 1000mm/sec FINE TB    .05sec,DO[77]=ON Tool_Offset,PR[14]    ; ! Přesné dosednutí na díl a aktivace upnutí DO77.
+  62:   ; ! Oddělovač.
+  63:  DO[49]=OFF ; ! Zavře chapadlo 1 pro uchopení.
+  64:  WAIT (DI[50])    ; ! Ověří, že chapadlo je skutečně zavřené.
+  65:   ; ! Oddělovač.
+  66:L P[52] 1000mm/sec CNT50 Tool_Offset,PR[14]    ; ! Odjíždí z místa odběru se zvedáním.
+  67:L P[53] 1500mm/sec CNT80 Tool_Offset,PR[14]    ; ! Pokračuje k výjezdové trajektorii.
+  68:L P[54] 2000mm/sec CNT100 TB   0.00sec,DO[115]=OFF Tool_Offset,PR[14]    ; ! Opouští zásobník a vypíná pomocný signál.
+  69:  LBL[20] ; ! Přeskok, pokud zásobník neměl díl.
+  70:J P[2] 100% CNT100 TB   0.00sec,DO[77]=OFF    ; ! Návrat do bezpečné pozice a vypnutí uchopení.
+  71:   ; ! Oddělovač.
+  72:  !***************** ; ! Sekce vyrovnávací stanice.
+  73:  !Vyrovnavaci stanice ; ! Titulek.
+  74:  !***************** ; ! Titulek.
+  75:   ; ! Oddělovač.
+  76:  UFRAME_NUM=2 ; ! Přepnutí na rámec vyrovnávací stanice.
+  77:  UTOOL_NUM=5 ; ! Použití hlavního chapadla.
+  78:   ; ! Oddělovač.
+  79:J P[45] 100% CNT80    ; ! Přesun k bufferu.
+  80:  IF (DI[53] AND DI[49]),JMP LBL[30] ; ! Pokud není díl nebo je griper obsazen, přeskočí vkládání.
+  81:   ; ! Oddělovač.
+  82:  WAIT DI[56]=OFF    ; ! Čeká, až je lůžko volné.
+  83:   ; ! Oddělovač.
+  84:  !Zalozeni do luzka ; ! Vkládací sekvence.
+  85:L P[27] 2000mm/sec CNT50 TB    .50sec,DO[116]=ON    ; ! Najetí nad lůžko s otevřením zarážky DO116.
+  86:L P[16] 1000mm/sec CNT20    ; ! Přesun blíž k lůžku.
+  87:L P[7] 1000mm/sec FINE TB    .20sec,DO[49]=ON    ; ! Přesný dosed a otevření chapadla pro položení dílu.
+  88:  //DO[49]=ON ; ! Starý ruční příkaz ponechán pro referenci.
+  89:  WAIT DI[49]=ON    ; ! Ověření, že chapadlo je otevřené.
+  90:  WAIT    .50(sec) ; ! Krátké prodlení pro dosednutí.
+  91:   ; ! Oddělovač.
+  92:  PR[13,1]=0    ; ! Nulování korekčního offsetu rotace.
+  93:  PR[13,2]=0    ; ! Nulování Y.
+  94:  PR[13,3]=0    ; ! Nulování Z.
+  95:  PR[13,4]=0    ; ! Nulování W.
+  96:  PR[13,5]=0    ; ! Nulování P.
+  97:  PR[13,6]=0    ; ! Nulování R.
+  98:   ; ! Oddělovač.
+  99:  PR[13,6]=R[9]    ; ! Přidá natočení podle seřízení z R9.
+ 100:   ; ! Oddělovač.
+ 101:L P[55] 1500mm/sec FINE Tool_Offset,PR[13]    ; ! Jemný přesun pro dorovnání rotace trubky.
+ 102:  DO[49]=OFF ; ! Zavře chapadlo po dorovnání.
+ 103:  WAIT DI[50]=ON    ; ! Ověří zavření.
+ 104:   ; ! Oddělovač.
+ 105:L P[56] 1000mm/sec CNT30 Tool_Offset,PR[13]    ; ! Odjezd s korekcí.
+ 106:L P[57] 2000mm/sec CNT100    ; ! Vyjetí do bezpečí.
+ 107:J P[58] 100% CNT100 TB    .50sec,DO[116]=OFF    ; ! Zavření zarážky a přechod k další sekci.
+ 108:   ; ! Oddělovač.
+ 109:  LBL[30] ; ! Přeskok, pokud se vkládání neprovádělo.
+ 110:   ; ! Oddělovač.
+ 111:  !TOOL_OFFSET pro UTOOL 1 ; ! Inicializace offsetu pro hlavní nástroj.
+ 112:  PR[21,1]=0    ; ! Nulování X pro další stanice.
+ 113:  PR[21,2]=0    ; ! Nulování Y.
+ 114:  PR[21,3]=0    ; ! Nulování Z.
+ 115:  PR[21,4]=0    ; ! Nulování W.
+ 116:  PR[21,5]=0    ; ! Nulování P.
+ 117:  PR[21,6]=0    ; ! Nulování R.
+ 118:  !TOOL_OFFSET pro UTOOL 2 ; ! Zrcadlení pro druhý nástroj.
+ 119:  PR[22]=PR[21]    ; ! Kopíruje nulový offset do PR22.
+ 120:   ; ! Oddělovač.
+ 121:  !Upinac 6 Pripraven? ; ! Kontrola stroje 5-stroke.
+ 122:  WAIT (DI[51] AND !DI[52])    ; ! Čeká na otevřené čelisti stroje.
+ 123:   ; ! Oddělovač.
+ 124:  !***************** ; ! Sekce 5-stroke.
+ 125:  !5-stroke ; ! Titulek stanice.
+ 126:  !***************** ; ! Titulek stanice.
+ 127:   ; ! Oddělovač.
+ 128:  GO[3]=2 ; ! Hlášení PLC, že obsluhujeme 5-stroke.
+ 129:   ; ! Oddělovač.
+ 130:  !Vyjmuti trubky  ; ! Začátek vyjmutí z 5-stroke.
+ 131:   ; ! Oddělovač.
+ 132:  UFRAME_NUM=2 ; ! Použití rámce stanice 5-stroke.
+ 133:  UTOOL_NUM=6 ; ! Přepnutí na speciální nástroj/úhel pro uchopení.
+ 134:J P[20] 100% CNT100    ; ! Rychlý přesun k nadjezdové poloze.
+ 135:J P[18] 100% CNT50    ; ! Přiblížení k odběru.
+ 136:  WAIT (DI[61])    ; ! Čeká, až stroj otevře a je připraven k odběru.
+ 137:L P[4] 2000mm/sec CNT10 TB    .05sec,DO[111]=ON    ; ! Pomalý vjezd s aktivací signálu DO111 pro stroj.
+ 138:L P[5] 1500mm/sec FINE    ; ! Přesné uchopení trubky.
+ 139:   ; ! Oddělovač.
+ 140:  IF (DI[62] AND !DI[64]),JMP LBL[21] ; ! Pokud už jsou čelisti rozepnuté, přeskočí otevírání.
+ 141:  DO[51]=OFF ; ! Zavře chapadlo 2 pro uvolnění stroje.
+ 142:  WAIT (DI[52])    ; ! Ověří zavření.
+ 143:  DO[62]=ON ; ! Požádá stroj o otevření čelistí.
+ 144:  WAIT (DI[62] AND !DI[64])    ; ! Čeká na potvrzení otevření.
+ 145:  DO[62]=OFF ; ! Vypne požadavek.
+ 146:  LBL[21] ; ! Pokračování vyjmutí.
+ 147:   ; ! Oddělovač.
+ 148:L P[6] 500mm/sec CNT10 TB   0.00sec,DO[63]=PULSE,1.0sec    ; ! Vyjmutí trubky s pulsem DO63 (rozezpírávací funkce).
+ 149:L P[8] 1000mm/sec CNT100    ; ! Odjezd se zvedáním.
+ 150:L P[30] 2000mm/sec CNT100 TB    .05sec,DO[111]=OFF    ; ! Opouští stroj a vypíná signál DO111.
+ 151:   ; ! Oddělovač.
+ 152:  !Vlozeni trubky ; ! Následuje založení zpět po opracování.
+ 153:  WAIT (DI[62] AND !DI[64])    ; ! Potvrzení, že čelisti jsou otevřené.
+ 154:   ; ! Oddělovač.
+ 155:  !Vypocet delky ; ! Výpočet pracovní výšky podle délky GI2.
+ 156:  PR[21,3]=345-R[2]    ; ! Nastaví Z bodu na základě délky trubky.
+ 157:   ; ! Oddělovač.
+ 158:  !Korekce st.1 C ; ! Přidává korekci R17.
+ 159:  WAIT R[17]>=(-2) AND R[17]<=2    ; ! Ověří, že korekce je v bezpečí.
+ 160:  PR[24]=PR[21]    ; ! Kopíruje základní bod do korekčního.
+ 161:  PR[24,3]=PR[24,3]+R[17]    ; ! Aplikuje jemnou korekci Z.
+ 162:   ; ! Oddělovač.
+ 163:  UFRAME_NUM=2 ; ! Pracuje stále v rámci 5-stroke.
+ 164:  UTOOL_NUM=5 ; ! Vrací standardní nástroj pro vložení.
+ 165:J P[12] 100% CNT50    ; ! Přesun k nájezdu.
+ 166:L P[3] 2000mm/sec CNT50 TB    .05sec,DO[111]=ON Tool_Offset,PR[21]    ; ! Najetí k čelistem se signálem pro stroj.
+ 167:L P[13] 1500mm/sec CNT50 Tool_Offset,PR[21]    ; ! Další přiblížení.
+ 168:L P[14] 500mm/sec FINE Tool_Offset,PR[24]    ; ! Dosednutí s korekcí R17 pro přesnost.
+ 169:   ; ! Oddělovač.
+ 170:  IF (!DI[50]),JMP LBL[22] ; ! Pokud není díl v griperu, přeskočí uvolnění stroje.
+ 171:  !Kontakt? ; ! Kontrola dosednutí.
+ 172:  WAIT (DI[63])    ; ! Čeká na potvrzení kontaktu stroje.
+ 173:  DO[64]=ON ; ! Požádá stroj o sevření.
+ 174:  WAIT (DI[64] AND !DI[62])    ; ! Čeká na zavření čelistí.
+ 175:  DO[49]=ON ; ! Otevírá griper robota pro předání dílu.
+ 176:  WAIT (DI[49])    ; ! Ověření otevření.
+ 177:  DO[64]=OFF ; ! Uvolní požadavek sevření.
+ 178:  LBL[22] ; ! Pokračování po vkládce.
+ 179:  DO[61]=ON ; ! Signalizuje stroji odjezd.
+ 180:  WAIT (!DI[61])    ; ! Čeká, až stroj potvrdí dokončení.
+ 181:  DO[61]=OFF ; ! Vypne signál.
+ 182:   ; ! Oddělovač.
+ 183:L P[25] 2000mm/sec CNT50    ; ! Odjezd z pracovní zóny.
+ 184:J P[15] 100% CNT100 TB   0.00sec,DO[111]=OFF    ; ! Návrat k bezpečné pozici, vypne strojní signál.
+ 185:   ; ! Oddělovač.
+ 186:  !***************** ; ! Sekce Shawer 2.
+ 187:  !Shawer 2 ; ! Titulek stanice.
+ 188:  !***************** ; ! Titulek.
+ 189:   ; ! Oddělovač.
+ 190:  GO[3]=3 ; ! Informuje PLC, že se obsluhuje Shawer 2.
+ 191:   ; ! Oddělovač.
+ 192:  !Vyjmuti trubky SHAWER 2 ; ! Začátek odběru z brusky.
+ 193:   ; ! Oddělovač.
+ 194:  UFRAME_NUM=3 ; ! Přepíná na rámec stanice Shawer 2.
+ 195:  UTOOL_NUM=5 ; ! Používá standardní chapadlo.
+ 196:  //J P[9] 100% FINE    ; ! Původní nadjezd ponechán zakomentovaný.
+ 197:J P[33] 100% CNT80    ; ! Přejezd k odběru.
+ 198:J P[34] 100% CNT50 TB    .05sec,DO[112]=ON    ; ! Přiblížení a aktivace signálu DO112.
+ 199:L P[35] 2000mm/sec FINE    ; ! Precizní nájezd na díl.
+ 200:   ; ! Oddělovač.
+ 201:  IF (DI[66] AND !DI[68]),JMP LBL[31] ; ! Pokud jsou čelisti už otevřené, přeskočí otevření stroje.
+ 202:  DO[49]=OFF ; ! Zavře chapadlo 1 pro uvolnění dílu.
+ 203:  WAIT (DI[50])    ; ! Ověří zavření.
+ 204:  DO[66]=ON ; ! Požádá stroj o otevření čelistí.
+ 205:  WAIT (DI[66] AND !DI[68])    ; ! Čeká na otevření.
+ 206:  DO[66]=OFF ; ! Vypne požadavek.
+ 207:  LBL[31] ; ! Pokračování odběru.
+ 208:   ; ! Oddělovač.
+ 209:L P[36] 400mm/sec CNT10    ; ! Pomalý výběr z čelistí.
+ 210:L P[37] 1000mm/sec CNT100    ; ! Odjezd od stroje.
+ 211:L P[44] 2000mm/sec CNT100 TB   0.00sec,DO[67]=PULSE,1.0sec    ; ! Odjezd s pulsem DO67 (vzduch/čištění sedla).
+ 212:L P[31] 2000mm/sec CNT80 TB    .05sec,DO[112]=OFF    ; ! Návrat k nadjezdu, vypnutí signálu stroje.
+ 213:   ; ! Oddělovač.
+ 214:  !Vlozeni trubky SHAWER 2 ; ! Příprava pro založení dalšího dílu.
+ 215:  WAIT (DI[66] AND !DI[68])    ; ! Čeká na otevřené čelisti.
+ 216:   ; ! Oddělovač.
+ 217:  !Korekce st.2 C ; ! Korekce výšky pro Shawer 2.
+ 218:  WAIT R[18]>=(-2) AND R[18]<=2    ; ! Validace korekce.
+ 219:  PR[25]=PR[22]    ; ! Kopíruje základní bod.
+ 220:  PR[25,3]=PR[25,3]+R[18]    ; ! Přidá Z korekci z R18.
+ 221:   ; ! Oddělovač.
+ 222:   ; ! Oddělovač.
+ 223:  UFRAME_NUM=3 ; ! Stále rámec Shawer 2.
+ 224:  UTOOL_NUM=6 ; ! Přepíná na alternativní nástroj pro vkládání.
+ 225:J P[38] 100% CNT50    ; ! Přesun k nájezdu.
+ 226:L P[39] 2000mm/sec CNT100 TB    .05sec,DO[112]=ON    ; ! Přiblížení se signálem.
+ 227:L P[32] 1500mm/sec CNT100    ; ! Další přiblížení.
+ 228:L P[40] 1000mm/sec CNT50    ; ! Jemnější pohyb.
+ 229:L P[41] 500mm/sec FINE    ; ! Precizní založení.
+ 230:   ; ! Oddělovač.
+ 231:  IF (!DI[52]),JMP LBL[32] ; ! Pokud není díl v griperu, přeskočí uvolnění.
+ 232:  !Kontakt? ; ! Kontrola dosednutí.
+ 233:  WAIT (DI[67])    ; ! Čeká na potvrzení od stroje.
+ 234:  DO[68]=ON ; ! Požádá stroj o sevření.
+ 235:  WAIT (DI[68] AND !DI[66])    ; ! Čeká na zavření čelistí.
+ 236:  DO[51]=ON ; ! Otevírá griper 2 pro předání.
+ 237:  WAIT (DI[51])    ; ! Ověření otevření.
+ 238:  DO[68]=OFF ; ! Vypíná požadavek sevření.
+ 239:  LBL[32] ; ! Pokračování po vkládce.
+ 240:  DO[65]=ON ; ! Signalizuje stroji odjezd.
+ 241:  WAIT (!DI[65])    ; ! Čeká na potvrzení.
+ 242:  DO[65]=OFF ; ! Ukončuje signalizaci.
+ 243:   ; ! Oddělovač.
+ 244:L P[42] 2000mm/sec CNT50    ; ! Odjezd z pracovního prostoru.
+ 245:J P[43] 100% CNT80 TB    .05sec,DO[112]=OFF    ; ! Návrat na bezpečný bod a vypnutí signálu.
+ 246:   ; ! Oddělovač.
+ 247:   ; ! Oddělovač.
+ 248:  !***************** ; ! Začátek nové části – čištění kartáčem (mnou navrženo pro BP).
+ 249:  !Cisteni ; ! Titulek stanice čištění.
+ 250:  !***************** ; ! Titulek.
+ 251:   ; ! Oddělovač.
+ 252:  GO[3]=4 ; ! Oznamuje PLC obsluhu stanice čištění.
+ 253:   ; ! Oddělovač.
+ 254:  UFRAME_NUM=4 ; ! Používá lokální rámec kartáče pro přesnou geometrii.
+ 255:  UTOOL_NUM=5 ; ! Standardní griper – drží trubku při čištění.
+ 256:   ; ! Oddělovač.
+ 257:  !Korekce st.3 A ; ! Korekce výšky kartáče (vědomě bez automatické kompenzace opotřebení).
+ 258:  WAIT R[19]>=(-2) AND R[19]<=2    ; ! Validuje ruční korekci Z (kartáč se dříve rozpadne než by se opotřebil).
+ 259:  PR[26]=PR[21]    ; ! Vychází z referenčního bodu dílu.
+ 260:  PR[26,3]=PR[26,3]+R[19]    ; ! Přidává výškovou korekci kartáče R19.
+ 261:   ; ! Oddělovač.
+ 262:J P[17] 100% CNT100    ; ! Přejezd k nájezdu stanice čištění.
+ 263:J P[19] 100% CNT100    ; ! Další bezpečný bod před trajektorií kartáče.
+ 264:   ; ! Oddělovač.
+ 265:   ; ! Oddělovač.
+ 266:  IF ((!DI[50] AND DI[49])),JMP LBL[41] ; ! Pokud nemáme díl v griperu, přeskočíme čištění.
+ 267:   ; ! Oddělovač.
+ 268:J P[21] 100% CNT70 TB    .05sec,DO[113]=ON Tool_Offset,PR[21]    ; ! Najetí k náběhu kartáče, zapíná DO113 (motor kartáče).
+ 269:   ; ! Oddělovač.
+ 270:  !Korekce levy bod ; ! Výpočet rohů obdélníkové dráhy dle R21.
+ 271:  PR[27]=PR[26]    ; ! Levý roh vychází ze základního bodu.
+ 272:  PR[27,1]=100-R[21]    ; ! Posun X vlevo podle ruční korekce R21.
+ 273:   ; ! Oddělovač.
+ 274:  !Korekce horni bod ; ! Druhý roh pro horní hranu.
+ 275:  PR[28]=PR[26]    ; ! Vychází z PR26.
+ 276:  PR[28,2]=100-R[21]    ; ! Posun Y nahoru, korekce R21.
+ 277:   ; ! Oddělovač.
+ 278:  !Korekce pravy bod ; ! Třetí roh obdélníku.
+ 279:  PR[29]=PR[26]    ; ! Kopie základního bodu.
+ 280:  PR[29,1]=(-100)+R[21]    ; ! Posun X doprava, kompenzace R21.
+ 281:   ; ! Oddělovač.
+ 282:  !Korekce spodni bod ; ! Čtvrtý roh dráhy.
+ 283:  PR[30]=PR[26]    ; ! Kopie základního bodu.
+ 284:  PR[30,2]=(-100)+R[21]    ; ! Posun Y dolů, kompenzace R21.
+ 285:   ; ! Oddělovač.
+ 286:   ; ! Oddělovač.
+ 287:L P[22] 2000mm/sec CNT50 Tool_Offset,PR[21]    ; ! Přechod na start dráhy.
+ 288:L P[23] R[23]mm/sec CNT100 Tool_Offset,PR[27]    ; ! Zahájení čištění do prvního rohu rychlostí z R23.
  289:C P[24] Tool_Offset,PR[28]
-    :  P[28] R[23]mm/sec CNT100 Tool_Offset,PR[29]    ;
+    :  P[28] R[23]mm/sec CNT100 Tool_Offset,PR[29]    ; ! Kruhové interpolace mezi rohy pro plynulé obkroužení kartáče.
  290:C P[49] Tool_Offset,PR[30]
-    :  P[50] R[23]mm/sec CNT100 Tool_Offset,PR[27]    ;
- 291:   ;
- 292:L P[59] 2000mm/sec CNT50 Tool_Offset,PR[21]    ;
- 293:J P[60] 100% CNT100 Tool_Offset,PR[21]    ;
- 294:   ;
- 295:   ;
- 296:  !***************** ;
- 297:  !Odhrotovani ;
- 298:  !***************** ;
- 299:   ;
- 300:  WAIT DI[69]=ON    ;
- 301:   ;
- 302:   ;
- 303:J P[61] 100% CNT100 Tool_Offset,PR[21]    ;
- 304:L P[62:nad celisti] 2000mm/sec CNT0 Tool_Offset,PR[21]    ;
- 305:L P[63:do celisti] 1000mm/sec FINE Tool_Offset,PR[26]    ;
- 306:   ;
- 307:  !Upnout celisti ;
- 308:  DO[69]=ON ;
- 309:  WAIT (!DI[69] AND DI[71])    ;
- 310:  DO[69]=OFF ;
- 311:   ;
- 312:  !Odepnout gripper robota ;
- 313:  DO[49]=ON ;
- 314:  WAIT (DI[49])    ;
- 315:   ;
- 316:  !Start hrotovani ;
- 317:  DO[71]=PULSE,1.0sec ;
- 318:  WAIT (!DI[71])    ;
- 319:   ;
- 320:   ;
- 321:  !Odjezd ;
- 322:  DO[73]=PULSE,0.5sec ;
- 323:L P[64] 2000mm/sec CNT50 Tool_Offset,PR[21]    ;
- 324:J P[65] 100% CNT80 TB   0.00sec,DO[113]=OFF Tool_Offset,PR[21]    ;
- 325:   ;
- 326:  LBL[41] ;
- 327:   ;
- 328:  UFRAME_NUM=5 ;
- 329:  UTOOL_NUM=5 ;
- 330:   ;
- 331:J P[26] 100% CNT100    ;
- 332:   ;
- 333:  !Konec cyklu ;
- 334:  IF (DI[54]),JMP LBL[50] ;
- 335:   ;
- 336:   ;
- 337:  JMP LBL[100] ;
- 338:   ;
- 339:  LBL[50] ;
- 340:   ;
- 341:  UFRAME_NUM=1 ;
- 342:  UTOOL_NUM=2 ;
- 343:J P[29] 20% CNT100    ;
- 344:  !HOME ;
- 345:J PR[2] 20% FINE    ;
+    :  P[50] R[23]mm/sec CNT100 Tool_Offset,PR[27]    ; ! Dokončení obdélníku, stále s rychlostí R23.
+ 291:   ; ! Oddělovač.
+ 292:L P[59] 2000mm/sec CNT50 Tool_Offset,PR[21]    ; ! Odjezd z kartáče.
+ 293:J P[60] 100% CNT100 Tool_Offset,PR[21]    ; ! Rychlý návrat k bezpečné pozici, kartáč zůstává zapnutý pro deburr.
+ 294:   ; ! Oddělovač.
+ 295:   ; ! Oddělovač.
+ 296:  !***************** ; ! Začátek mnou navrženého odhrotování.
+ 297:  !Odhrotovani ; ! Titulek deburring stanice.
+ 298:  !***************** ; ! Titulek.
+ 299:   ; ! Oddělovač.
+ 300:  WAIT DI[69]=ON    ; ! Čeká na připravené čelisti odhrotovače.
+ 301:   ; ! Oddělovač.
+ 302:   ; ! Oddělovač.
+ 303:J P[61] 100% CNT100 Tool_Offset,PR[21]    ; ! Přesun k nadjezdu nad čelistmi s offsetem dílu.
+ 304:L P[62:nad celisti] 2000mm/sec CNT0 Tool_Offset,PR[21]    ; ! Sjezd nad čelisti v UFRAME4/UTOOL5.
+ 305:L P[63:do celisti] 1000mm/sec FINE Tool_Offset,PR[26]    ; ! Vkládání dílu do čelistí s korekcí R19 v PR26.
+ 306:   ; ! Oddělovač.
+ 307:  !Upnout celisti ; ! Spouští upnutí odhrotovací jednotky.
+ 308:  DO[69]=ON ; ! Požadavek sevření čelistí.
+ 309:  WAIT (!DI[69] AND DI[71])    ; ! Čeká na potvrzení sevření (DI71) a uvolnění signálu připravenosti.
+ 310:  DO[69]=OFF ; ! Vypíná požadavek po potvrzení.
+ 311:   ; ! Oddělovač.
+ 312:  !Odepnout gripper robota ; ! Uvolnění dílu z robota.
+ 313:  DO[49]=ON ; ! Otevírá chapadlo 1.
+ 314:  WAIT (DI[49])    ; ! Ověří otevření.
+ 315:   ; ! Oddělovač.
+ 316:  !Start hrotovani ; ! Spuštění cyklu odhrotování.
+ 317:  DO[71]=PULSE,1.0sec ; ! Impuls start pro stroj (DO71), nový krok BP.
+ 318:  WAIT (!DI[71])    ; ! Čeká na odpadnutí signálu – stroj převzal díl.
+ 319:   ; ! Oddělovač.
+ 320:   ; ! Oddělovač.
+ 321:  !Odjezd ; ! Odjezd robota na bezpečí po spuštění stroje.
+ 322:  DO[73]=PULSE,0.5sec ; ! Impuls pro spuštění cyklu odhrotování/časování.
+ 323:L P[64] 2000mm/sec CNT50 Tool_Offset,PR[21]    ; ! Odjezd z čelistí.
+ 324:J P[65] 100% CNT80 TB   0.00sec,DO[113]=OFF Tool_Offset,PR[21]    ; ! Rychlý návrat, vypnutí kartáče DO113 po dokončení sekce.
+ 325:   ; ! Oddělovač.
+ 326:  LBL[41] ; ! Bypass, pokud se čištění/odhrotování neprovádí.
+ 327:   ; ! Oddělovač.
+ 328:  UFRAME_NUM=5 ; ! Přepnutí na výstupní rámec dopravníku.
+ 329:  UTOOL_NUM=5 ; ! Standardní griper pro odložení dílu.
+ 330:   ; ! Oddělovač.
+ 331:J P[26] 100% CNT100    ; ! Přesun k odkládacímu bodu na dopravník.
+ 332:   ; ! Oddělovač.
+ 333:  !Konec cyklu ; ! Ukončovací logika jednoho kusu.
+ 334:  IF (DI[54]),JMP LBL[50] ; ! Pokud PLC hlásí konec šarže, jdi do HOME.
+ 335:   ; ! Oddělovač.
+ 336:   ; ! Oddělovač.
+ 337:  JMP LBL[100] ; ! Jinak opakuj cyklus.
+ 338:   ; ! Oddělovač.
+ 339:  LBL[50] ; ! Konec šarže.
+ 340:   ; ! Oddělovač.
+ 341:  UFRAME_NUM=1 ; ! Rámec pro návrat domů.
+ 342:  UTOOL_NUM=2 ; ! Bezpečný nástroj pro HOME.
+ 343:J P[29] 20% CNT100    ; ! Přesun k mezi-bodu HOME.
+ 344:  !HOME ; ! Komentář k návratu.
+ 345:J PR[2] 20% FINE    ; ! Finální HOME pozice pro bezpečný konec.
 /POS
 P[1]{
    GP1:
